@@ -28,11 +28,26 @@ jobs:
         aws-region: us-east-1 # Use your bucket region here
  
  
-    - name: Deploy Cloud formation template
-      run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            #stack_name=$(grep $file  document/stack_name.txt|cut -d'|' -f2)
-            stack_name=$(echo $file | cut -f2 -d'/' | cut -f1 -d'.' )
-            aws cloudformation deploy --template $file --stack-name $stack_name
-          done
+  # Ensure the file exists before running the loop
+if [[ -f "Document/stack-name.txt" ]]; then
+  # Read each line from the file and process it
+  while IFS= read -r file; do
+    # Extract the stack name from the file path
+    stack_name=$(echo $file | cut -f2 -d'/' | cut -f1 -d'.')
+    
+    # Check if the extracted stack name is valid (non-empty)
+    if [[ -n "$stack_name" ]]; then
+      # Deploy using AWS CloudFormation
+      echo "Deploying stack: $stack_name"
+      aws cloudformation deploy --template $file --stack-name $stack_name || exit 1
+    else
+      echo "Error: Could not extract stack name from $file"
+      exit 1
+    fi
+  done < "Document/stack-name.txt"
+else
+  echo "Error: File 'Document/stack-name.txt' does not exist"
+  exit 1
+fi
+
  
