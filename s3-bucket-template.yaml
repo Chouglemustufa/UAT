@@ -5,5 +5,5 @@ Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub '${AWS::imsahfa}-s3-bucket'  # Ensures a unique name
+      BucketName: !Sub '${AWS::StackName}-s3-bucket'  # Ensures a unique name
       AccessControl: Private
