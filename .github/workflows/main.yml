@@ -4,10 +4,10 @@ on:
     branches:
       - main
     path:
-      - deploy/**
+      - Deploy/**
     paths-ignore:
       - .github/**
-      - document/**
+      - Document/**
  
 jobs:
   build:
